@@ -13,5 +13,7 @@ namespace BANProtocolVerfier
         public String Type { get; set; }
 
         public IStatement Statement { get; set; }
+
+        public bool Fresh { get; set; }
     }
 }
