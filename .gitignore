@@ -45,6 +45,10 @@ build/
 *.pidb
 *.log
 *.scc
+<<<<<<< HEAD
+*.exe
+=======
+>>>>>>> f2b093bf4cf74ee768020dffe172fa2366f292de
 
 # Visual C++ cache files
 ipch/
@@ -109,6 +113,7 @@ AppPackages/
 # Others
 sql/
 *.Cache
+*.cache
 ClientBin/
 [Ss]tyle[Cc]op.*
 ~$*

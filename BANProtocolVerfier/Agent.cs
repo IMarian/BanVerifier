@@ -11,6 +11,7 @@ namespace BANProtocolVerfier
         public List<String> Nonces { get; set; }
         public List<String> Keys { get; set; }
         // We rock.
-        
+
+        public List<Action> Actions { get; set; }
     }
 }
