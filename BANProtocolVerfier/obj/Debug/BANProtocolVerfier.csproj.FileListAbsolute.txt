@@ -1,0 +1,9 @@
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\bin\Debug\BANProtocolVerfier.exe.config
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\bin\Debug\BANProtocolVerfier.exe
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\bin\Debug\BANProtocolVerfier.pdb
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.csprojResolveAssemblyReference.cache
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.Form1.resources
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.Properties.Resources.resources
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.csproj.GenerateResource.Cache
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.exe
+c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.pdb
