@@ -7,3 +7,12 @@ c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANPro
 c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.csproj.GenerateResource.Cache
 c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.exe
 c:\users\imarian\documents\visual studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.pdb
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\bin\Debug\BANProtocolVerfier.exe.config
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.exe
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.pdb
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\bin\Debug\BANProtocolVerfier.exe
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\bin\Debug\BANProtocolVerfier.pdb
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.csprojResolveAssemblyReference.cache
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.Form1.resources
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.Properties.Resources.resources
+C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.csproj.GenerateResource.Cache
