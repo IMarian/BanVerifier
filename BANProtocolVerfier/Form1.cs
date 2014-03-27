@@ -66,7 +66,7 @@ namespace BANProtocolVerfier
 
                         foreach (var nonce in noncesArray)
                         {
-                            newAgent.Nonces.Add(nonce.ToString());
+                            newAgent.nonces.Add(nonce.ToString());
                         }
                     }
 
@@ -77,7 +77,7 @@ namespace BANProtocolVerfier
 
                         foreach (var key in keysArray)
                         {
-                            newAgent.Keys.Add(key.ToString());
+                            newAgent.keys.Add(key.ToString());
                         }
                     }
 
@@ -136,22 +136,22 @@ namespace BANProtocolVerfier
                             }
                         }
 
-                        if (jMessageValue.Property("encrypted") != null)
-                        {
-                            JObject jEncrypted = new JObject(jPhaseValue.Property("encrypted"));
-                            string encryptionKey = (string)jEncrypted.Properties().Select(p => p.Value).ElementAt(0);
-                            newMessage.Encrypted = encryptionKey;
-                        }
+                        //if (jMessageValue.Property("encrypted") != null)
+                        //{
+                        //    JObject jEncrypted = new JObject(jPhaseValue.Property("encrypted"));
+                        //    string encryptionKey = (string)jEncrypted.Properties().Select(p => p.Value).ElementAt(0);
+                        //    newMessage.Encrypted = encryptionKey;
+                        //}
 
-                        if (jMessageValue.Property("keys") != null)
-                        {
-                            JObject jKeys = new JObject(jPhaseValue.Property("keys"));
-                            JArray keysArray = (JArray)jKeys.Properties().Select(p => p.Value).ElementAt(0);
-                            foreach (string key in keysArray)
-                            {
-                                newMessage.Keys.Add(key);
-                            }
-                        }
+                        //if (jMessageValue.Property("keys") != null)
+                        //{
+                        //    JObject jKeys = new JObject(jPhaseValue.Property("keys"));
+                        //    JArray keysArray = (JArray)jKeys.Properties().Select(p => p.Value).ElementAt(0);
+                        //    foreach (string key in keysArray)
+                        //    {
+                        //        newMessage.Keys.Add(key);
+                        //    }
+                        //}
                     }
                 }
             }

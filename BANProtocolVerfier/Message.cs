@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BANProtocolVerfier
 {
-    public class Message : IStatement
+    public class Message
     {
         public Message()
         {
@@ -19,9 +19,22 @@ namespace BANProtocolVerfier
         public List<String> Nonces { get; set; }
         public List<Key> Keys { get; set; }
         public List<Message> Messages { get; set; }
-        public String Encrypted { get; set; }
         public List<Agent> Agents { get; set; }
+        // Should be replaced with
+        public List<IStatement> statements { get; set; }
 
-        public bool Fresh { get; set; }
+        public Key Encrypted { get; set; }
+
+        public bool Fresh
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

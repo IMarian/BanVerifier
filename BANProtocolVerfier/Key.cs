@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace BANProtocolVerfier
 {
-    public class Key : IStatement
+    public class Key
     {
-        public Key(string name)
+
+        List<Agent> agents { get; set; }
+
+        public Agent getOpposed(Agent a)
         {
-            Name = name;
+            foreach (Agent agent in agents)
+                if (agent != a)
+                    return agent;
+            return null;
         }
-        public string Name { get; set; }
-        public bool Fresh { get; set; } 
     }
 }

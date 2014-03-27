@@ -9,5 +9,7 @@ namespace BANProtocolVerfier
     public interface IStatement
     {
         bool Fresh { get; set; }
+
+        //TODO Equals()
     }
 }
