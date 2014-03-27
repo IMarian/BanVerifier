@@ -16,3 +16,4 @@ C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de 
 C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.Form1.resources
 C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.Properties.Resources.resources
 C:\Users\George\Desktop\Dropbox\Master SI Anul I, Semestrul II - Iasi\Modele de securitate\Ban Verifier Project\BANProtocolVerfier\obj\Debug\BANProtocolVerfier.csproj.GenerateResource.Cache
+C:\Users\IMarian\Documents\Visual Studio 2013\Projects\BANProtocolVerfier\BANProtocolVerfier\bin\Debug\Newtonsoft.Json.dll

@@ -1,12 +1,12 @@
 {
 	"agents": {
 		"A": {
-			"nonces": "Na",
-			"keys": "Kas"
+			"nonces": ["Na"],
+			"keys": ["Kas"]
 		},
 		"B": {
-			"nonces": "Nb",
-			"keys": "Kbs"
+			"nonces": ["Nb"],
+			"keys": ["Kbs"]
 		},
 		"S": {
 			"keys": ["Kas", "Kbs"]

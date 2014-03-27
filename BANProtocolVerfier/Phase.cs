@@ -8,6 +8,11 @@ namespace BANProtocolVerfier
 {
     public class Phase
     {
+        public Phase()
+        {
+            Messages = new List<Message>();
+        }
+
         public Agent Sender { get; set; }
         public Agent Receiver { get; set; }
         public List<Message> Messages { get; set; }
