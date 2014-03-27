@@ -8,6 +8,14 @@ namespace BANProtocolVerfier
 {
     public class Key : IStatement
     {
-        public bool Fresh { get; set; } 
+        List<Agent> agents { get; set; }
+
+        public Agent getOpposed(Agent a)
+        {
+            foreach (Agent agent in agents)
+                if (agent != a)
+                    return agent;
+            return null;
+        }
     }
 }
