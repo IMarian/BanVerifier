@@ -8,6 +8,11 @@ namespace BANProtocolVerfier
 {
     public class Key : IStatement
     {
+        public Key(string name)
+        {
+            Name = name;
+        }
+        public string Name { get; set; }
         public bool Fresh { get; set; } 
     }
 }

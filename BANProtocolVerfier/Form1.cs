@@ -111,7 +111,47 @@ namespace BANProtocolVerfier
 
                     if (jPhaseValue.Property("message") != null)
                     {
+                        JObject jMessage = new JObject(jPhaseValue.Property("message"));
+                        JObject jMessageValue = (JObject)jMessage.Properties().Select(p => p.Value).ElementAt(0);
 
+                        Message newMessage = new Message();
+
+                        if (jMessageValue.Property("ids") != null)
+                        {
+                            JObject jIds = new JObject(jPhaseValue.Property("ids"));
+                            JArray idsArray = (JArray)jIds.Properties().Select(p => p.Value).ElementAt(0);
+                            foreach (string id in idsArray)
+                            {
+                                newMessage.Agents.Add((Agent)protocol.Agents.Select(a => a.Id == id));
+                            }
+                        }
+
+                        if (jMessageValue.Property("nonces") != null)
+                        {
+                            JObject jNonces = new JObject(jPhaseValue.Property("nonces"));
+                            JArray noncesArray = (JArray)jNonces.Properties().Select(p => p.Value).ElementAt(0);
+                            foreach (string nonce in noncesArray)
+                            {
+                                newMessage.Nonces.Add(nonce);
+                            }
+                        }
+
+                        if (jMessageValue.Property("encrypted") != null)
+                        {
+                            JObject jEncrypted = new JObject(jPhaseValue.Property("encrypted"));
+                            string encryptionKey = (string)jEncrypted.Properties().Select(p => p.Value).ElementAt(0);
+                            newMessage.Encrypted = encryptionKey;
+                        }
+
+                        if (jMessageValue.Property("keys") != null)
+                        {
+                            JObject jKeys = new JObject(jPhaseValue.Property("keys"));
+                            JArray keysArray = (JArray)jKeys.Properties().Select(p => p.Value).ElementAt(0);
+                            foreach (string key in keysArray)
+                            {
+                                newMessage.Keys.Add(key);
+                            }
+                        }
                     }
                 }
             }
