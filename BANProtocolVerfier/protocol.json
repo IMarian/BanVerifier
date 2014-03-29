@@ -1,36 +1,53 @@
 {
 	"agents": {
 		"A": {
-			"nonces": ["Na"],
-			"keys": ["Kas"]
+			"nonces": ["Na"]
 		},
 		"B": {
-			"nonces": ["Nb"],
-			"keys": ["Kbs"]
+			"nonces": ["Nb"]
 		},
 		"S": {
-			"keys": ["Kas", "Kbs"]
+			
 		}
 	},
+	"keys": [{
+			"a1": "A",
+			"a2": "B"		
+		}, {
+			"a1": "B",
+			"a2": "S"
+		}],
 	"phases": {
 		"1": {
 			"sender": "A",
 			"receiver": "S",
 			"message": {
 			 	"ids": ["A", "B"],
-			 	"nonces": "Na"
+			 	"nonces": ["Na"]
 			}
 		},
 		"2": {
 			"sender": "S",
 			"receiver": "A",
 			"message": {
-				"encrypted": "Kas",
-			 	"nonces": "Na",
-			 	"keys": "Kab",
+				"encrypted": {
+					"a1": "A",
+					"a2": "S"
+				},
+			 	"nonces": ["Na"],
+				"keys": [{
+					"a1": "A",
+					"a2": "B"
+				}],
 			 	"message": {
-			 		"encrypted": "Kbs",
-			 		"keys": "Kab"
+			 		"encrypted": {
+						"a1": "B",
+						"a2": "S"
+					},
+			 		"keys": [{
+						"a1": "A",
+						"a2": "B"
+					}]
 			 	}
 			}
 		},
@@ -38,24 +55,36 @@
 			"sender": "A",
 			"receiver": "B",
 			"message": {
-				"encrypted": "Kbs",
-				"keys": "Kab"
+				"encrypted": {
+					"a1": "A",
+					"a2": "B"
+				},
+				"keys": [{
+					"a1": "A",
+					"a2": "B"
+				}]
 			}
 		},
 		"4": {
 			"sender": "B",
 			"receiver": "A",
 			"message": {
-				"encrypted": "Kab",
-				"nonces": "Nb"
+				"encrypted": {
+					"a1": "A",
+					"a2": "B"
+				},
+				"nonces": ["Nb"]
 			}
 		},
 		"5": {
 			"sender": "A",
 			"receiver": "B",
 			"message": {
-				"encrypted": "Kab",
-				"nonces": "Nb"
+				"encrypted": {
+					"a1": "A",
+					"a2": "B"
+				},
+				"nonces": ["Nb"]
 			}
 		}
 	}

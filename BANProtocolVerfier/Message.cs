@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BANProtocolVerfier
 {
-    public class Message
+    public class Message : IStatement
     {
         public Message()
         {
@@ -14,6 +14,7 @@ namespace BANProtocolVerfier
             Keys = new List<Key>();
             Messages = new List<Message>();
             Agents = new List<Agent>();
+            Encrypted = new Key();
         }
 
         public List<String> Nonces { get; set; }
@@ -35,6 +36,34 @@ namespace BANProtocolVerfier
             {
                 throw new NotImplementedException();
             }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("\nEncrypted: " + Encrypted.ToString());
+
+            sb.Append("\nNonces: ");
+            foreach (string nonce in Nonces)
+                sb.Append(nonce);
+
+            sb.Append("\nKeys: ");
+            foreach (Key key in Keys)
+                sb.Append(key.ToString());
+
+            sb.Append("\nMessages: ");
+            foreach (Message m in Messages)
+            {
+                sb.Append(m.ToString());
+            }
+
+            sb.Append("\nAgents: ");
+            foreach (Agent a in Agents)
+            {
+                sb.Append(a.Id);
+            }
+
+            return sb.ToString();
         }
     }
 }

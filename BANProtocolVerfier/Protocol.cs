@@ -12,9 +12,11 @@ namespace BANProtocolVerfier
         {
             Phases = new List<Phase>();
             Agents = new List<Agent>();
+            Keys = new List<Key>();
         }
 
         public List<Phase> Phases { get; set; }
         public List<Agent> Agents { get; set; }
+        public List<Key> Keys { get; set; }
     }
 }

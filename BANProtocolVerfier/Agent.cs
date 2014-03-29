@@ -11,13 +11,13 @@ namespace BANProtocolVerfier
         public Agent()
         {
             nonces = new List<string>();
-            keys = new List<string>();
+            keys = new List<Key>();
             actions = new List<Action>();
         }
 
         public string Id { get; set; }
         public List<String> nonces { get; set; }
-        public List<String> keys { get; set; }
+        public List<Key> keys { get; set; }
 
         public List<Action> actions  { get; set; }
 
@@ -130,12 +130,12 @@ namespace BANProtocolVerfier
             }
 
             sb.Append("\nKeys: ");
-            foreach (string key in this.keys)
+            foreach (Key key in this.keys)
             {
-                sb.Append(key + " ");
+                sb.Append(key.ToString() + " ");
             }
 
-            return sb.ToString();
+            return sb.ToString() + "\n";
         }
     }
 }
