@@ -119,7 +119,9 @@ namespace BANProtocolVerfier
                 if (jPhaseValue.Property("message") != null)
                 {
                     JObject jMessage = new JObject(jPhaseValue.Property("message"));
-                    phase.message = this.ParseMessage(jMessage);
+                    JObject jMessageValue = (JObject)jMessage.Properties().Select(p => p.Value).ElementAt(0);
+
+                    phase.message = this.ParseMessage(jMessageValue);
                 }
 
                 protocol.Phases.Add(phase);
@@ -130,9 +132,6 @@ namespace BANProtocolVerfier
 
         private Message ParseMessage(JObject jMessageValue)
         {
-            //JObject jMessage = new JObject(jsonMessage);
-            //JObject jMessageValue = (JObject)jMessage.Properties().Select(p => p.Value).ElementAt(0);
-
             Message newMessage = new Message();
 
             if (jMessageValue.Property("ids") != null)
@@ -210,12 +209,10 @@ namespace BANProtocolVerfier
                 JObject jMessages = new JObject(jMessageValue.Property("messages"));
                 JArray jMessagesValue = (JArray)jMessages.Properties().Select(p => p.Value).ElementAt(0);
 
-                foreach (JProperty message in jMessages.Properties())
+                foreach (var message in jMessagesValue)
                 {
-                    JObject jMsg = new JObject(message);
-                    MessageBox.Show(jMsg.ToString());
-
-                    newMessage.Messages.Add(this.ParseMessage(jMsg));
+                    JObject jMsg = (JObject)message;
+                    newMessage.Messages.Add(this.ParseMessage((JObject)message));
                 }
             }
 

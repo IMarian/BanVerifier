@@ -80,7 +80,7 @@ namespace BANProtocolVerfier
 			
 			if(Messages.Count() != 0)
 			{
-                sb.Append("\r\n" + getTabs(numberOfTabs));
+                sb.Append("\r\n" + getTabs(numberOfTabs) + "Message(s): ");
 				foreach (Message m in Messages)
                     sb.Append(m.ToString(numberOfTabs + 1));
             }
