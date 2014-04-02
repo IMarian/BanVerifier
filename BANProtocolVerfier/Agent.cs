@@ -10,23 +10,23 @@ namespace BANProtocolVerfier
     {
         public Agent()
         {
-            nonces = new List<string>();
-            keys = new List<Key>();
-            actions = new List<Action>();
+            knowledges = new List<Knowledge>();
         }
 
         public string Id { get; set; }
-        public List<String> nonces { get; set; }
-        public List<Key> keys { get; set; }
 
-        public List<Action> actions  { get; set; }
+        public List<Knowledge> knowledges { get; set; }
 
-        private void addKnowledge(Agent a, ActionType actionType, IStatement statement)
+        public void addKnowledge(Knowledge newKnowledge)
         {
-            foreach (Action action in actions)
-                if (!action.agent.Equals(a) || !action.actionType.Equals(actionType) || !action.statement.Equals(statement))
-                    actions.Add(new Action(a, actionType, statement));
-                    // Overwrite equals in all classes which implement IStatement
+            bool isNewKnowledge = true;
+
+            foreach (Knowledge knowledge in knowledges)
+                if (knowledge.Equals(newKnowledge))
+                    isNewKnowledge = false;
+
+            if (isNewKnowledge)
+                knowledges.Add(newKnowledge);
         }
 
         /// <summary>
@@ -35,11 +35,15 @@ namespace BANProtocolVerfier
         /// <param name="keyQP"></param>
         private void messageMeaningRule(Key keyQP)
         {
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.sees && action.statement is Message)
-                    if (((Message)action.statement).Encrypted.Equals(keyQP))
-                            addKnowledge(this, ActionType.believes, action.statement);
-            // Same message but without encryption
+            for(int i = 0; i < knowledges.Count; i++)
+                if (knowledges[i].knowledgeType == KnowledgeType.sees && knowledges[i].statement is Message)
+                    if (((Message)knowledges[i].statement).Encrypted.Equals(keyQP))
+                    {
+                        Message uncryptedMessage = (Message)knowledges[i].statement;
+                        uncryptedMessage.Encrypted.agents.Clear();
+                        addKnowledge(new Knowledge(this, KnowledgeType.believes,
+                        new Knowledge(keyQP.getOpposed(this), KnowledgeType.said, uncryptedMessage)));
+                    }
         }
 
         /// <summary>
@@ -48,23 +52,24 @@ namespace BANProtocolVerfier
         /// <param name="statement"></param>
         private void nonceVerificationRule(IStatement statement)
         {
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.believes && action.statement is Action)
-                    if (!((Action)action.statement).agent.Equals(this) && ((Action)action.statement).actionType.Equals(ActionType.believes))
-                        addKnowledge(this, ActionType.believes, new Action(((Action)action.statement).agent, ActionType.believes, ((Action)action.statement).statement));
+            for (int i = 0; i < knowledges.Count; i++)
+                if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement is Knowledge)
+                    if (!((Knowledge)knowledges[i].statement).agent.Equals(this) && ((Knowledge)knowledges[i].statement).knowledgeType.Equals(KnowledgeType.believes))
+                        addKnowledge(new Knowledge(this, KnowledgeType.believes,
+                            new Knowledge(((Knowledge)knowledges[i].statement).agent, KnowledgeType.believes, ((Knowledge)knowledges[i].statement).statement)));
         }
 
         /// <summary>
         /// Jurisdiction rule
         /// </summary>
-        /// <param name="action"></param>
-        private void jurisdiction(Action action)
+        /// <param name="knowledge"></param>
+        private void jurisdiction(Knowledge knowledge)
         {
-            foreach (Action otherAction in actions)
-                if (otherAction.actionType == ActionType.believes && action.statement is Action)
-                    if (((Action)action.statement).agent.Equals(action.agent) && ((Action)action.statement).actionType.Equals(ActionType.believes)
-                        && ((Action)action.statement).statement.Equals(action.statement))
-                        addKnowledge(this, ActionType.believes, action.statement);
+            for (int i = 0; i < knowledges.Count; i++)
+                if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledge.statement is Knowledge)
+                    if (((Knowledge)knowledge.statement).agent.Equals(knowledge.agent) && ((Knowledge)knowledge.statement).knowledgeType.Equals(KnowledgeType.believes)
+                        && ((Knowledge)knowledge.statement).statement.Equals(knowledge.statement))
+                        addKnowledge(new Knowledge(this, KnowledgeType.believes, knowledge.statement));
         }
 
         /// <summary>
@@ -73,69 +78,92 @@ namespace BANProtocolVerfier
         /// <param name="keyQP"></param>
         private void breakInComponents(Key keyQP)
         {
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.sees && action.statement is Message)
-                    if (((Message)action.statement).Encrypted.Equals(keyQP))
-                        foreach (IStatement statement in ((Message)action.statement).statements)
-                            addKnowledge(this, ActionType.believes, statement);
+            for (int i = 0; i < knowledges.Count; i++)
+                if (knowledges[i].knowledgeType == KnowledgeType.sees && knowledges[i].statement is Message)
+                    if (((Message)knowledges[i].statement).Encrypted.Equals(keyQP))
+                        foreach (IStatement statement in ((Message)knowledges[i].statement).statements)
+                            addKnowledge(new Knowledge(this, KnowledgeType.believes, statement));
         }
 
         /// <summary>
         /// Searches for messages containing X which P believes is fresh.
         /// </summary>
         /// <param name="statemenet"></param>
-        private void checkMessagesForFreshness(IStatement statemenet)
+        private void checkMessagesForFreshness(IStatement freshStatement)
         {
-
+            for (int i = 0; i < knowledges.Count; i++)
+                if (knowledges[i].statement is Message)
+                {
+                    Message message = (Message)knowledges[i].statement;
+                    if (message.contains(freshStatement))
+                    {
+                        Message freshMessage = (Message)message;
+                        freshMessage.Fresh = true;
+                        addKnowledge(new Knowledge(this, KnowledgeType.believes, freshMessage));
+                    }
+                }
         }
 
         public void expandKnowledge()
         {
-            // I - Message-meaning
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.believes && action.statement is Key)
-                    messageMeaningRule((Key)action.statement);
+            int initialKnowledges = -1;
 
-            // II - Nonce-verification
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.believes && action.statement.Fresh.Equals(true))
-                    nonceVerificationRule(action.statement);
+            while (initialKnowledges < knowledges.Count())
+            {
+                initialKnowledges = knowledges.Count();
+                // I - Message-meaning
+                for (int i = 0; i < knowledges.Count; i++)
+                    if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement is Key)
+                        messageMeaningRule((Key)knowledges[i].statement);
 
-            // III - Jurisdiction
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.believes && action.statement is Action)
-                    if (((Action)action.statement).actionType.Equals(ActionType.controls))
-                        jurisdiction((Action)action.statement);
+                // II - Nonce-verification
+                for (int i = 0; i < knowledges.Count; i++)
+                    if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement.Fresh.Equals(true))
+                        nonceVerificationRule(knowledges[i].statement);
 
-            // IV - Components of formula (Similar logic to I)
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.believes && action.statement is Key)
-                    breakInComponents((Key)action.statement);
+                // III - Jurisdiction
+                for (int i = 0; i < knowledges.Count; i++)
+                    if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement is Knowledge)
+                        if (((Knowledge)knowledges[i].statement).knowledgeType.Equals(KnowledgeType.controls))
+                            jurisdiction((Knowledge)knowledges[i].statement);
 
-            // V - Formula with fresh part
-            foreach (Action action in actions)
-                if (action.actionType == ActionType.believes && action.statement.Fresh.Equals(true))
-                    breakInComponents((Key)action.statement);
+                // IV - Components of formula (Similar logic to I)
+                for (int i = 0; i < knowledges.Count; i++)
+                    if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement is Key)
+                        breakInComponents((Key)knowledges[i].statement);
 
+                // V - Formula with fresh part
+                for (int i = 0; i < knowledges.Count; i++)
+                    if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement.Fresh.Equals(true))
+                        checkMessagesForFreshness(knowledges[i].statement);
+            }
+        }
+
+        private string getTabs(int number)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < number; i++)
+                sb.Append("\t");
+            return sb.ToString();
         }
 
         public override string ToString()
         {
+            return ToString(1);
+        }
+
+        public string ToString(int numberOfTabs)
+        {
             StringBuilder sb = new StringBuilder();
-            sb.Append("------------ Agent " + this.Id + (" ------------"));
-            sb.Append("\nNonces: ");
-            foreach (string nonce in this.nonces)
-            {
-                sb.Append(nonce + " ");
-            }
+            sb.Append("------------ Agent " + this.Id + (" ------------\r\n"));
+            sb.Append("\r\nKnowledge(s):\r\n");
+            foreach (Knowledge knowledge in this.knowledges)
+                if(knowledge is Message)
+                    sb.Append(getTabs(numberOfTabs) + knowledge.ToString(numberOfTabs + 1) + "\r\n");
+                else
+                    sb.Append(getTabs(numberOfTabs) + knowledge.ToString() + "\r\n");
 
-            sb.Append("\nKeys: ");
-            foreach (Key key in this.keys)
-            {
-                sb.Append(key.ToString() + " ");
-            }
-
-            return sb.ToString() + "\n";
+            return sb.ToString() + "\r\n";
         }
     }
 }

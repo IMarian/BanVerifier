@@ -10,57 +10,78 @@ namespace BANProtocolVerfier
     {
         public Message()
         {
-            Nonces = new List<string>();
+            Nonces = new List<Nonce>();
             Keys = new List<Key>();
             Messages = new List<Message>();
             Agents = new List<Agent>();
             Encrypted = new Key();
+
+            statements = new List<IStatement>();
         }
 
-        public List<String> Nonces { get; set; }
+        public List<Nonce> Nonces { get; set; }
         public List<Key> Keys { get; set; }
         public List<Message> Messages { get; set; }
         public List<Agent> Agents { get; set; }
-        // Should be replaced with
+		
         public List<IStatement> statements { get; set; }
 
         public Key Encrypted { get; set; }
 
-        public bool Fresh
+        public bool Fresh { get; set; }
+
+        public bool contains(IStatement statementToBeChecked)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            foreach (IStatement statement in statements)
+                if (statement.Equals(statementToBeChecked))
+                    return true;
+            return false;
+        }
+
+        private string getTabs(int number)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < number; i++ )
+                sb.Append("\t");
+            return sb.ToString();
         }
 
         public override string ToString()
         {
+            return ToString(1);
+        }
+
+        public string ToString(int numberOfTabs)
+        {
             StringBuilder sb = new StringBuilder();
-            sb.Append("\nEncrypted: " + Encrypted.ToString());
+            sb.Append("Message: \r\n" + getTabs(numberOfTabs) + "Encrypted: " + Encrypted.ToString());
 
-            sb.Append("\nNonces: ");
-            foreach (string nonce in Nonces)
-                sb.Append(nonce);
+			if(Nonces.Count != 0)
+			{
+                sb.Append("\r\n" + getTabs(numberOfTabs) + "Nonce(s): ");
+				foreach (Nonce nonce in Nonces)
+					sb.Append(nonce.id);
+			}
 
-            sb.Append("\nKeys: ");
-            foreach (Key key in Keys)
-                sb.Append(key.ToString());
-
-            sb.Append("\nMessages: ");
-            foreach (Message m in Messages)
-            {
-                sb.Append(m.ToString());
+			if(Keys.Count() != 0)
+			{
+                sb.Append("\r\n" + getTabs(numberOfTabs) + "Key(s): ");
+				foreach (Key key in Keys)
+					sb.Append(key.ToString());
+			}
+			
+			if(Messages.Count() != 0)
+			{
+                sb.Append("\r\n" + getTabs(numberOfTabs));
+				foreach (Message m in Messages)
+                    sb.Append(m.ToString(numberOfTabs + 1));
             }
 
-            sb.Append("\nAgents: ");
-            foreach (Agent a in Agents)
-            {
-                sb.Append(a.Id);
+			if(Agents.Count() != 0)
+			{
+                sb.Append("\r\n" + getTabs(numberOfTabs) + "Agent(s): ");
+				foreach (Agent a in Agents)
+					sb.Append(a.Id);
             }
 
             return sb.ToString();

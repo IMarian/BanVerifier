@@ -15,6 +15,7 @@ namespace BANProtocolVerfier
 {
     public partial class Form1 : Form
     {
+        private String fileContent;
         private Protocol protocol;
 
         public Form1()
@@ -27,31 +28,28 @@ namespace BANProtocolVerfier
             /** Get info about loaded file: location, fullname */
             string filename = "", path = "";
             OpenFileDialog ofd = new OpenFileDialog();
+
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 filename = Path.GetDirectoryName(ofd.FileName);
                 path = Path.GetFullPath(ofd.FileName);
-            }
 
-            /** Read the file line by line and put its content to the text box */
-            using (StreamReader sr = new StreamReader(path))
-            {
-                string fileContent = sr.ReadToEnd();
-                txtProtocol.Text = fileContent;
+
+                /** Read the file line by line and put its content to the text box */
+                using (StreamReader sr = new StreamReader(path))
+                    txtProtocol.Text = fileContent = sr.ReadToEnd();
             }
         }
 
         private void btnVerify_Click(object sender, EventArgs e)
         {
-            if (txtProtocol.Text != "")
+            if (fileContent != null)
             {
-                Protocol protocol = this.Parse(txtProtocol.Text);
-                Test();
+                Protocol protocol = this.Parse(fileContent);
+                txtProtocol.Text = protocol.ToString();
             }
             else
-            {
-                throw new Exception("Protocol not loaded, please load a protocol json-formatted file");
-            }
+                MessageBox.Show("Protocol not loaded, please load a protocol json-formatted file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private Protocol Parse(string jProtocol)
@@ -59,10 +57,11 @@ namespace BANProtocolVerfier
             protocol = new Protocol();
 
             /** Parse the contents of the json-formatted protocol */
-            dynamic jsonProtocol = JsonConvert.DeserializeObject(txtProtocol.Text);
+            dynamic jsonProtocol = JsonConvert.DeserializeObject(jProtocol);
             dynamic jsonAgents = jsonProtocol.agents;
             dynamic jsonPhases = jsonProtocol.phases;
             dynamic jsonKeys = jsonProtocol.keys;
+            dynamic jsonKnowledges = jsonProtocol.knowledges;
 
             foreach (dynamic jsonAgent in jsonAgents)
             {
@@ -70,18 +69,6 @@ namespace BANProtocolVerfier
                 JObject jAgent = new JObject(jsonAgent);
                 newAgent.Id = jAgent.Properties().Select(p => p.Name).ElementAt(0);
                 JObject jAgentValue = (JObject)jAgent.Properties().Select(p => p.Value).ElementAt(0);
-
-                if (jAgentValue.Property("nonces") != null)
-                {
-                    JObject jNonces = new JObject(jAgentValue.Property("nonces"));
-                    JArray noncesArray = (JArray)jNonces.Properties().Select(p => p.Value).ElementAt(0);
-
-                    foreach (var nonce in noncesArray)
-                    {
-                        newAgent.nonces.Add(nonce.ToString());
-                    }
-                }
-
                 protocol.Agents.Add(newAgent);
             }
 
@@ -95,18 +82,13 @@ namespace BANProtocolVerfier
                 key.agents.Add(a1);
                 key.agents.Add(a2);
 
-                if (a1.keys.Where(p => p.agents.ElementAt(0).Id == a1.Id).ToList().Count == 0)
-                {
-
-                    a1.keys.Add(key);
-                }
-
-                if (a2.keys.Where(p => p.agents.ElementAt(1).Id == a2.Id).ToList().Count == 0)
-                {
-                    a2.keys.Add(key);
-                }
-
                 protocol.Keys.Add(key);
+            }
+
+            foreach (dynamic jsonKnowledge in jsonKnowledges)
+            {
+                Knowledge knowledge = ParseKnowledge(jsonKnowledge);
+                knowledge.agent.addKnowledge(knowledge);
             }
 
             foreach (dynamic jsonPhase in jsonPhases)
@@ -136,8 +118,7 @@ namespace BANProtocolVerfier
 
                 if (jPhaseValue.Property("message") != null)
                 {
-                    Message newMessage = this.ParseMessage(jPhaseValue.Property("message"));
-                    phase.Messages.Add(newMessage);
+                    phase.message = this.ParseMessage(jPhaseValue.Property("message"));
                 }
 
                 protocol.Phases.Add(phase);
@@ -167,9 +148,9 @@ namespace BANProtocolVerfier
             {
                 JObject jNonces = new JObject(jMessageValue.Property("nonces"));
                 JArray noncesArray = (JArray)jNonces.Properties().Select(p => p.Value).ElementAt(0);
-                foreach (string nonce in noncesArray)
+                foreach (string nonceId in noncesArray)
                 {
-                    newMessage.Nonces.Add(nonce);
+                    newMessage.Nonces.Add(new Nonce(nonceId));
                 }
             }
 
@@ -231,19 +212,87 @@ namespace BANProtocolVerfier
             return newMessage;
         }
 
-        private void Test()
+        private Knowledge ParseKnowledge(JObject jsonKnowledge)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (var agent in protocol.Agents)
-                sb.Append(agent.ToString());
 
-            MessageBox.Show(sb.ToString());
-            
-            sb.Clear();
-            foreach (var phase in protocol.Phases)
-                sb.Append("\n======= Phase " + (protocol.Phases.IndexOf(phase) + 1) + " =======\n" + phase.ToString());
+			Agent agent = null;
+            KnowledgeType knowledgeType = KnowledgeType.believes; // Random initializaiton.
+            IStatement statement = null;
 
-            MessageBox.Show(sb.ToString());
+            if (jsonKnowledge.Property("id") != null)
+            {
+                JObject jSender = new JObject(jsonKnowledge.Property("id"));
+                string id = (string)jSender.Properties().Select(p => p.Value).ElementAt(0);
+                agent = protocol.Agents.Where(p => p.Id == id).ElementAt(0);
+            }
+
+            if (jsonKnowledge.Property("type") != null)
+            {
+                JObject jSender = new JObject(jsonKnowledge.Property("type"));
+                string type = (string)jSender.Properties().Select(p => p.Value).ElementAt(0);
+                knowledgeType = (KnowledgeType)Enum.Parse(typeof(KnowledgeType), type);
+            }
+
+			if (jsonKnowledge.Property("key") != null)
+            {
+                JObject jKey = new JObject(jsonKnowledge.Property("key"));
+                JObject jKeyValue = (JObject)jKey.Properties().Select(p => p.Value).ElementAt(0);
+
+                string agt1 = jKeyValue.Property("a1").Value.ToString();
+                string agt2 = jKeyValue.Property("a2").Value.ToString();
+
+                Key newKey = new Key();
+
+                Agent ag1 = protocol.Agents.Where(p => p.Id == agt1).ElementAt(0);
+                Agent ag2 = protocol.Agents.Where(p => p.Id == agt2).ElementAt(0);
+
+                newKey.agents.Add(ag1);
+                newKey.agents.Add(ag2);
+
+                if ((protocol.Keys.Where(p => p.agents.ElementAt(0).Id == agt1 && p.agents.ElementAt(1).Id == agt2)).Count() != 0)
+                {
+                    Key foundKey = protocol.Keys.Where(p => p.agents.ElementAt(0).Id == agt1 && p.agents.ElementAt(1).Id == agt2).ElementAt(0);
+                    statement = foundKey;
+                }
+                else
+                {
+                    protocol.Keys.Add(newKey);
+                    statement = newKey;
+                }
+            }
+
+			if (jsonKnowledge.Property("nonce") != null)
+            {
+                JObject jNonce = new JObject(jsonKnowledge.Property("nonce"));
+                JObject jNonceValue = (JObject)jNonce.Properties().Select(p => p.Value).ElementAt(0);
+
+                string id = jNonceValue.Property("id").Value.ToString();
+                bool fresh = Boolean.Parse(jNonceValue.Property("fresh").Value.ToString());
+
+                Nonce newNonce = new Nonce(id);
+
+                newNonce.Fresh = fresh;
+
+                statement = newNonce;
+            }
+			
+            if (jsonKnowledge.Property("knowledge") != null)
+            {
+                JObject jKnowledge = new JObject(jsonKnowledge.Property("knowledge"));
+                statement = ParseKnowledge((JObject)jKnowledge.Properties().Select(p => p.Value).ElementAt(0));
+            }
+
+				
+            if (agent != null)
+                return new Knowledge(agent, knowledgeType, statement);
+			else	
+				return null;
+        }
+
+        private void analyzeButton_Click(object sender, EventArgs e)
+        {
+            btnVerify_Click(null, null);
+            txtProtocol.Text = protocol.runProtocol();
         }
     }
 }

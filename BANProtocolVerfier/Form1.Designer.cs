@@ -31,6 +31,7 @@
             this.txtProtocol = new System.Windows.Forms.TextBox();
             this.loadBtn = new System.Windows.Forms.Button();
             this.btnVerify = new System.Windows.Forms.Button();
+            this.analyzeButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtProtocol
@@ -38,13 +39,14 @@
             this.txtProtocol.Location = new System.Drawing.Point(12, 12);
             this.txtProtocol.Multiline = true;
             this.txtProtocol.Name = "txtProtocol";
+            this.txtProtocol.ReadOnly = true;
             this.txtProtocol.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtProtocol.Size = new System.Drawing.Size(625, 445);
+            this.txtProtocol.Size = new System.Drawing.Size(610, 658);
             this.txtProtocol.TabIndex = 0;
             // 
             // loadBtn
             // 
-            this.loadBtn.Location = new System.Drawing.Point(176, 463);
+            this.loadBtn.Location = new System.Drawing.Point(100, 676);
             this.loadBtn.Name = "loadBtn";
             this.loadBtn.Size = new System.Drawing.Size(135, 23);
             this.loadBtn.TabIndex = 1;
@@ -54,19 +56,30 @@
             // 
             // btnVerify
             // 
-            this.btnVerify.Location = new System.Drawing.Point(328, 463);
+            this.btnVerify.Location = new System.Drawing.Point(241, 676);
             this.btnVerify.Name = "btnVerify";
             this.btnVerify.Size = new System.Drawing.Size(135, 23);
             this.btnVerify.TabIndex = 2;
-            this.btnVerify.Text = "Verify";
+            this.btnVerify.Text = "Interpret/Reload protocol";
             this.btnVerify.UseVisualStyleBackColor = true;
             this.btnVerify.Click += new System.EventHandler(this.btnVerify_Click);
+            // 
+            // analyzeButton
+            // 
+            this.analyzeButton.Location = new System.Drawing.Point(382, 676);
+            this.analyzeButton.Name = "analyzeButton";
+            this.analyzeButton.Size = new System.Drawing.Size(135, 23);
+            this.analyzeButton.TabIndex = 4;
+            this.analyzeButton.Text = "Analyze protocol";
+            this.analyzeButton.UseVisualStyleBackColor = true;
+            this.analyzeButton.Click += new System.EventHandler(this.analyzeButton_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(649, 517);
+            this.ClientSize = new System.Drawing.Size(634, 711);
+            this.Controls.Add(this.analyzeButton);
             this.Controls.Add(this.btnVerify);
             this.Controls.Add(this.loadBtn);
             this.Controls.Add(this.txtProtocol);
@@ -82,6 +95,7 @@
         private System.Windows.Forms.TextBox txtProtocol;
         private System.Windows.Forms.Button loadBtn;
         private System.Windows.Forms.Button btnVerify;
+        private System.Windows.Forms.Button analyzeButton;
     }
 }
 

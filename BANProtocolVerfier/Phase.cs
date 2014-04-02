@@ -10,23 +10,19 @@ namespace BANProtocolVerfier
     {
         public Phase()
         {
-            Messages = new List<Message>();
+
         }
 
         public Agent Sender { get; set; }
         public Agent Receiver { get; set; }
-        public List<Message> Messages { get; set; }
+        public Message message { get; set; }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("\nAgent: " + Sender.Id);
-            sb.Append("\nReceiver: " + Receiver.Id);
-
-            foreach(var message in Messages)
-            {
-                sb.Append("\nMessage: " + message.ToString());
-            }
+            sb.Append("\r\nAgent: " + Sender.Id);
+            sb.Append("\r\nReceiver: " + Receiver.Id);
+            sb.Append("\r\n" + message.ToString());
 
             return sb.ToString();
         }

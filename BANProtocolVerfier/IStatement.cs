@@ -10,6 +10,6 @@ namespace BANProtocolVerfier
     {
         bool Fresh { get; set; }
 
-        //TODO Equals()
+        string ToString(int numberOfTabs);
     }
 }

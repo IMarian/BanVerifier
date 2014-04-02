@@ -1,14 +1,8 @@
 {
 	"agents": {
-		"A": {
-			"nonces": ["Na"]
-		},
-		"B": {
-			"nonces": ["Nb"]
-		},
-		"S": {
-			
-		}
+		"A": {},
+		"B": {},
+		"S": {}
 	},
 	"keys": [{
 			"a1": "A",
@@ -17,6 +11,61 @@
 			"a1": "B",
 			"a2": "S"
 		}],
+	"knowledges": [{
+			"id": "A",
+			"type": "believes",
+			"key": {
+					"a1": "A",
+					"a2": "S"
+				}
+			}, {
+			"id": "S",
+			"type": "believes",
+			"key": {
+					"a1": "A",
+					"a2": "S"
+				}
+			}, {
+			"id": "B",
+			"type": "believes",
+			"key": {
+					"a1": "B",
+					"a2": "S"
+				}
+			}, {
+			"id": "S",
+			"type": "believes",
+			"key": {
+					"a1": "B",
+					"a2": "S"
+				}
+			}, {
+			"id": "A",
+			"type": "believes",
+			"knowledge": {
+					"id": "S",
+					"type": "controls",
+					"key": {
+							"a1": "A",
+							"a2": "B"
+						}
+				}
+			}, {
+			"id": "A",
+			"type": "believes",
+			"nonce": {
+					"id": "Na",
+					"fresh": "true"
+				}
+			}, {
+			"id": "B",
+			"type": "believes",
+			"nonce": {
+					"id": "Nb",
+					"fresh": "true"
+				}
+			}
+		],	
 	"phases": {
 		"1": {
 			"sender": "A",
@@ -56,8 +105,8 @@
 			"receiver": "B",
 			"message": {
 				"encrypted": {
-					"a1": "A",
-					"a2": "B"
+					"a1": "B",
+					"a2": "S"
 				},
 				"keys": [{
 					"a1": "A",
