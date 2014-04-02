@@ -35,14 +35,15 @@ namespace BANProtocolVerfier
         /// <param name="keyQP"></param>
         private void messageMeaningRule(Key keyQP)
         {
-            for(int i = 0; i < knowledges.Count; i++)
+            for (int i = 0; i < knowledges.Count; i++)
                 if (knowledges[i].knowledgeType == KnowledgeType.sees && knowledges[i].statement is Message)
                     if (((Message)knowledges[i].statement).Encrypted.Equals(keyQP))
                     {
                         Message uncryptedMessage = (Message)knowledges[i].statement;
-                        uncryptedMessage.Encrypted.agents.Clear();
-                        addKnowledge(new Knowledge(this, KnowledgeType.believes,
-                        new Knowledge(keyQP.getOpposed(this), KnowledgeType.said, uncryptedMessage)));
+                        uncryptedMessage.refreshStatementsList();
+
+                        foreach (IStatement statement in uncryptedMessage.statements)
+                            addKnowledge(new Knowledge(this, KnowledgeType.believes, new Knowledge(keyQP.getOpposed(this), KnowledgeType.said, statement)));
                     }
         }
 
@@ -54,9 +55,14 @@ namespace BANProtocolVerfier
         {
             for (int i = 0; i < knowledges.Count; i++)
                 if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement is Knowledge)
-                    if (!((Knowledge)knowledges[i].statement).agent.Equals(this) && ((Knowledge)knowledges[i].statement).knowledgeType.Equals(KnowledgeType.believes))
+                { 
+                    Knowledge knowledge = (Knowledge)knowledges[i].statement;
+
+                    if (!knowledge.agent.Equals(this) && knowledge.knowledgeType.Equals(KnowledgeType.said) && 
+                            knowledge.statement.Equals(statement))
                         addKnowledge(new Knowledge(this, KnowledgeType.believes,
                             new Knowledge(((Knowledge)knowledges[i].statement).agent, KnowledgeType.believes, ((Knowledge)knowledges[i].statement).statement)));
+                }
         }
 
         /// <summary>
@@ -66,10 +72,14 @@ namespace BANProtocolVerfier
         private void jurisdiction(Knowledge knowledge)
         {
             for (int i = 0; i < knowledges.Count; i++)
-                if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledge.statement is Knowledge)
-                    if (((Knowledge)knowledge.statement).agent.Equals(knowledge.agent) && ((Knowledge)knowledge.statement).knowledgeType.Equals(KnowledgeType.believes)
-                        && ((Knowledge)knowledge.statement).statement.Equals(knowledge.statement))
+                if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement is Knowledge)
+                {
+                    Knowledge secondKnowledge = (Knowledge)knowledges[i].statement;
+
+                    if (secondKnowledge.agent.Equals(knowledge.agent) && secondKnowledge.knowledgeType.Equals(KnowledgeType.believes)
+                        && secondKnowledge.statement.Equals(knowledge.statement))
                         addKnowledge(new Knowledge(this, KnowledgeType.believes, knowledge.statement));
+                }
         }
 
         /// <summary>
@@ -82,7 +92,7 @@ namespace BANProtocolVerfier
                 if (knowledges[i].knowledgeType == KnowledgeType.sees && knowledges[i].statement is Message)
                     if (((Message)knowledges[i].statement).Encrypted.Equals(keyQP))
                         foreach (IStatement statement in ((Message)knowledges[i].statement).statements)
-                            addKnowledge(new Knowledge(this, KnowledgeType.believes, statement));
+                            addKnowledge(new Knowledge(this, KnowledgeType.sees, statement));
         }
 
         /// <summary>
@@ -98,8 +108,11 @@ namespace BANProtocolVerfier
                     if (message.contains(freshStatement))
                     {
                         Message freshMessage = (Message)message;
-                        freshMessage.Fresh = true;
-                        addKnowledge(new Knowledge(this, KnowledgeType.believes, freshMessage));
+
+                        freshMessage.refreshStatementsList();
+
+                        foreach (IStatement statement in freshMessage.statements)
+                            addKnowledge(new Knowledge(this, KnowledgeType.believes, statement));
                     }
                 }
         }
@@ -158,7 +171,7 @@ namespace BANProtocolVerfier
             sb.Append("------------ Agent " + this.Id + (" ------------\r\n"));
             sb.Append("\r\nKnowledge(s):\r\n");
             foreach (Knowledge knowledge in this.knowledges)
-                if(knowledge is Message)
+                if (knowledge is Message)
                     sb.Append(getTabs(numberOfTabs) + knowledge.ToString(numberOfTabs + 1) + "\r\n");
                 else
                     sb.Append(getTabs(numberOfTabs) + knowledge.ToString() + "\r\n");

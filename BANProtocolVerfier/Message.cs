@@ -30,6 +30,14 @@ namespace BANProtocolVerfier
 
         public bool Fresh { get; set; }
 
+        public void refreshStatementsList()
+        {
+            statements = new List<IStatement>();
+            statements.AddRange(Nonces);
+            statements.AddRange(Keys);
+            statements.AddRange(Messages);
+        }
+
         public bool contains(IStatement statementToBeChecked)
         {
             foreach (IStatement statement in statements)

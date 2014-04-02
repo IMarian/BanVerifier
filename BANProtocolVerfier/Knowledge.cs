@@ -25,6 +25,21 @@ namespace BANProtocolVerfier
             statement = newStatement;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Knowledge))
+                return false;
+
+            Knowledge objKnowledge = (Knowledge)obj;
+
+            if (agent.Id.Equals(objKnowledge.agent.Id) && knowledgeType.Equals(objKnowledge.knowledgeType)
+                    && statement.Equals(objKnowledge.statement))
+                return true;
+            else
+                return false;
+
+        }
+
         public override string ToString()
         {
             return ToString(1);

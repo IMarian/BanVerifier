@@ -16,10 +16,24 @@ namespace BANProtocolVerfier
         {
             id = newId;
         }
-		
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Nonce))
+                return false;
+
+            return id.Equals(((Nonce)obj).id);
+        }
+
         public override string ToString()
         {
-            return "Nonce " + id;
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Nonce " + id);
+
+            if(Fresh)
+                sb.Append(" is fresh");
+
+            return sb.ToString();
         }
 
         public string ToString(int numberOfTabs)
