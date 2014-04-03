@@ -107,11 +107,9 @@ namespace BANProtocolVerfier
                     Message message = (Message)knowledges[i].statement;
                     if (message.contains(freshStatement))
                     {
-                        Message freshMessage = (Message)message;
+                        message.refreshStatementsList();
 
-                        freshMessage.refreshStatementsList();
-
-                        foreach (IStatement statement in freshMessage.statements)
+                        foreach (IStatement statement in message.statements)
                             addKnowledge(new Knowledge(this, KnowledgeType.believes, statement));
                     }
                 }
@@ -149,6 +147,19 @@ namespace BANProtocolVerfier
                 for (int i = 0; i < knowledges.Count; i++)
                     if (knowledges[i].knowledgeType == KnowledgeType.believes && knowledges[i].statement.Fresh.Equals(true))
                         checkMessagesForFreshness(knowledges[i].statement);
+
+                // VI See Messages in unencrypted messages
+                for (int i = 0; i < knowledges.Count; i++)
+                    if (knowledges[i].knowledgeType == KnowledgeType.sees && knowledges[i].statement is Message)
+                        if (((Message)knowledges[i].statement).Encrypted.agents.Count == 0)
+                        {
+                            Message unencryptedMessage = (Message)knowledges[i].statement;
+
+                            unencryptedMessage.refreshStatementsList();
+
+                            foreach (IStatement statement in unencryptedMessage.statements)
+                                addKnowledge(new Knowledge(this, KnowledgeType.sees, statement));
+                        }
             }
         }
 

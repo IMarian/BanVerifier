@@ -8,6 +8,9 @@
 		"a1": "A",
 		"a2": "B"	
 	}, {
+		"a1": "A",
+		"a2": "S"
+	},{
 		"a1": "B",
 		"a2": "S"
 	}],
@@ -72,7 +75,7 @@
 			"receiver": "B",
 			"message": {
 				"ids": [ "A" ],
-				"nonces": [ "na" ]
+				"nonces": [ "Na" ]
 			}
 		},
 		"2": {
@@ -80,14 +83,14 @@
 			"receiver": "S",
 			"message": {
 				"ids": [ "B" ],
-				"nonces": [ "nb" ],
+				"nonces": [ "Nb" ],
 				"message": {
 					"encrypted": {
 						"a1": "B",
 						"a2": "S"
 					},
 					"ids": [ "A" ],
-					"nonces": [ "na" ]
+					"nonces": [ "Na" ]
 				} 
 			}
 		},
@@ -95,14 +98,14 @@
 			"sender": "S",
 			"receiver": "A",
 			"message": {
-				"nonces": [ "nb" ],
+				"nonces": [ "Nb" ],
 				"messages": [{
 					"encrypted": {
 						"a1": "A",
-						"a2": "B"
+						"a2": "S"
 					},
 					"ids": [ "B" ],
-					"nonces": [ "na" ],
+					"nonces": [ "Na" ],
 					"keys": [{
 						"a1": "A",
 						"a2": "B"
@@ -113,7 +116,7 @@
 						"a2": "S"
 					},
 					"ids": [ "A" ],
-					"nonces": [ "nb" ],
+					"nonces": [ "Nb" ],
 					"keys": [{
 						"a1": "A",
 						"a2": "B"
@@ -131,7 +134,7 @@
 						"a2": "S"
 					},
 					"ids": [ "A" ],
-					"nonces": [ "nb" ],
+					"nonces": [ "Nb" ],
 					"keys": [{
 						"a1": "A",
 						"a2": "B"
@@ -141,7 +144,7 @@
 						"a1": "A",
 						"a2": "B"
 					},
-					"nonces": [ "nb" ]
+					"nonces": [ "Nb" ]
 				}]
 			}
 		}
